@@ -20,26 +20,15 @@ public final class JokeFetcher {
      *
      * @param jokeId e.g., "R7UfaahVfFd"
      */
-    public void printJokeText(String jokeId) {
-        URL url;
-        try {
-            url = new URL("https://icanhazdadjoke.com/j/" + jokeId);
-        } catch (MalformedURLException e) {
-            throw new IllegalArgumentException("Bad URL");
-        }
-        HttpURLConnection connection;
-        try {
-            connection = (HttpURLConnection) url.openConnection();
-        } catch (IOException e) {
-            System.out.println("Cannot connect to jokes server.");
-            return;
-        }
-        connection.setRequestProperty("Accept", "text/plain");
+    public String printJokeText(HttpURLConnection connection) {
+        String result = "";
         try (var connectionStream = connection.getInputStream();
              var s = new Scanner(connectionStream).useDelimiter("\\A")) {
-            System.out.println(s.next());
+            result += s.next();
+            result += "\n";
         } catch (IOException e) {
-            System.out.println("Cannot fetch jokes.");
+            throw new IllegalArgumentException("Cannot fetch jokes");
         }
+        return result;
     }
 }

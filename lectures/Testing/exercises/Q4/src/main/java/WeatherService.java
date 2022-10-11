@@ -1,16 +1,19 @@
 import java.io.IOException;
 
 public class WeatherService {
-    private final HttpClient httpClient;
+    /* private final HttpClient httpClient;
 
     public WeatherService() {
         httpClient = new RealHttpClient();
-    }
+    } */
 
-    public Weather getWeatherToday() {
+    // This is not entirely correct! we still need the contructor for this class
+    // In the solution they just add a second constructor which takes an HttpClient as input for testing
+
+    public Weather getWeatherToday(HttpClient client) {
         String data;
         try {
-            data = httpClient.get("http://example.org/weather/today");
+            data = client.get("http://example.org/weather/today");
         } catch (IOException e) {
             return Weather.UNKNOWN;
         }

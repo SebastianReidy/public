@@ -4,7 +4,7 @@ import static org.hamcrest.MatcherAssert.*;
 
 final class Vector3Test {
 
-    // should also write a test for the constructor! 
+    // should also write a test for the constructor!
     @Test
     public void IsZeroVectorTrue() {
         Vector3 vec = new Vector3(0,0,0);

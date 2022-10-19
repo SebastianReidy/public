@@ -11,7 +11,8 @@ public class App {
 
   private static void sorting() {
     // Take 100 numbers.
-    var numbers = IntStream.range(0, 100).boxed().toArray(Integer[]::new);
+    // var numbers = IntStream.range(0, 100).boxed().toArray(Integer[]::new);
+    var numbers = IntStream.range(0, 5).boxed().toArray(Integer[]::new);
     Collections.shuffle(Arrays.asList(numbers));
 
     // Sort them according to their natural order.

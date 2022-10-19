@@ -68,9 +68,7 @@ public class Student {
       return false;
     }
     Student student = (Student) o;
-    return id == student.id &&
-        Objects.equals(name, student.name) &&
-        Objects.equals(courses, student.courses);
+    return id == student.id; // only determine equality based on the ID because this is a final field
   }
 
   /**
@@ -78,6 +76,7 @@ public class Student {
    */
   @Override
   public int hashCode() {
-    return Objects.hash(name, id, courses);
+    return Objects.hash(name, id);  // removed courses from the hash tuple since they change during the semester,
+    // yet the hash should always point to the same object SOLUTION: only use the ID for the hashs
   }
 }

@@ -13,12 +13,16 @@ public class App {
         public BinaryTree(String v, BinaryTree l, BinaryTree r) {
             value = v;
             left = l;
-            right = l;
+            right = r; // bad variable naming
         }
 
         public static BinaryTree fromList(List<String> list) {
+            // need to add a base case
+            if (list.size() == 0)
+                return null;
             int mid = list.size() / 2;
-            return new BinaryTree(list.get(mid), fromList(list.subList(0, mid-1)), fromList(list.subList(mid, list.size()-1)));
+            // no need for -1 because sublist is exclusive
+            return new BinaryTree(list.get(mid), fromList(list.subList(0, mid)), fromList(list.subList(mid+1, list.size())));
         }
 
         public List<String> toList() {

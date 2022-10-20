@@ -1,7 +1,15 @@
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+
+import org.junit.jupiter.api.Test;
+
+import static org.hamcrest.Matchers.*;
+import static org.hamcrest.MatcherAssert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public final class WeatherServiceTest {
     @Test
@@ -9,69 +17,49 @@ public final class WeatherServiceTest {
         assertThat(1 + 1, is(2));
     }
 
-    // also test the case when the HttpClient does not provide any input, hence an exception is thrown
     @Test
-    void weatherUnknown(){ // maybe add the name of the method under test to the test description
-        HttpClient testClient = new HttpClient() {
-            @Override
-            public String get(String url) {
-                return "asdfa";
-            }
-        };
-        WeatherService weatherService = new WeatherService();
-        assertThat(weatherService.getWeatherToday(testClient), is(Weather.UNKNOWN));
-    }
-
-    @Test
-    void weatherSunny() {
-        HttpClient testClient = new HttpClient() {
-            @Override
-            public String get(String url) {
-                return "Sunny";
-            }
+    public void GetThrowsException(){
+        HttpClient client = url -> {
+            throw new IOException();
         };
 
-        WeatherService weatherService = new WeatherService();
-        assertThat(weatherService.getWeatherToday(testClient), is(Weather.SUNNY));
+        assertThat(new WeatherService(client).getWeatherToday(), is(Weather.UNKNOWN));
     }
 
     @Test
-    void weatherRainy() {
-        HttpClient testClient = new HttpClient(){
-            @Override
-            public String get(String url) {
-                return "Rainy";
-            }
-        }; // could also do the shortcut using a lambda function HttpClient testClient = url -> "Rainy";
+    public void SunnyWeather(){
+        HttpClient client = url -> "Sunny";
 
-        WeatherService weatherService = new WeatherService();
-        assertThat(weatherService.getWeatherToday(testClient), is(Weather.RAINY));
+        assertThat(new WeatherService(client).getWeatherToday(), is(Weather.SUNNY));
     }
 
     @Test
-    void weatherSnowy() {
-        HttpClient testClient = new HttpClient(){
-            @Override
-            public String get(String url) {
-                return "Snowy";
-            }
-        };
+    public void RainyWeather(){
+        HttpClient client = url -> "Rainy";
 
-        WeatherService weatherService = new WeatherService();
-        assertThat(weatherService.getWeatherToday(testClient), is(Weather.SNOWY));
+        assertThat(new WeatherService(client).getWeatherToday(), is(Weather.RAINY));
     }
 
     @Test
-    void weatherHaleluja() {
-        HttpClient testClient = new HttpClient(){
-            @Override
-            public String get(String url) {
-                return "???";
-            }
-        };
+    public void SnowyWeather(){
+        HttpClient client = url -> "Snowy";
 
-        WeatherService weatherService = new WeatherService();
-        assertThat(weatherService.getWeatherToday(testClient), is(Weather.ITS_RAINING_MEN_HALLELUJAH));
+        assertThat(new WeatherService(client).getWeatherToday(), is(Weather.SNOWY));
     }
+
+    @Test
+    public void QuestionWeather(){
+        HttpClient client = url -> "???";
+
+        assertThat(new WeatherService(client).getWeatherToday(), is(Weather.ITS_RAINING_MEN_HALLELUJAH));
+    }
+
+    @Test
+    public void DefaultWeather(){
+        HttpClient client = url -> "bla";
+
+        assertThat(new WeatherService(client).getWeatherToday(), is(Weather.UNKNOWN));
+    }
+
 
 }

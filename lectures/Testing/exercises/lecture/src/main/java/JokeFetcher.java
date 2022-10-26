@@ -14,21 +14,42 @@ import java.util.Scanner;
  * (If you have the time, you can try improving this class to explicitly detect "ID not found" errors,
  * and write tests for the error cases)
  */
+interface HttpClient{
+    public List<String> get(String url);
+
+}
 public final class JokeFetcher {
     /**
      * Prints the joke with the specific ID to the console.
      *
      * @param jokeId e.g., "R7UfaahVfFd"
      */
-    public String printJokeText(HttpURLConnection connection) {
-        String result = "";
+    private final HttpClient client;
+
+    JokeFetcher(HttpClient client){
+        this.client = client;
+    }
+
+    public void printJokeText(String jokeId) {
+        URL url;
+        try {
+            url = new URL("https://icanhazdadjoke.com/j/" + jokeId);
+        } catch (MalformedURLException e) {
+            throw new IllegalArgumentException("Bad URL");
+        }
+        HttpURLConnection connection;
+        try {
+            connection = (HttpURLConnection) url.openConnection();
+        } catch (IOException e) {
+            System.out.println("Cannot connect to jokes server.");
+            return;
+        }
+        connection.setRequestProperty("Accept", "text/plain");
         try (var connectionStream = connection.getInputStream();
              var s = new Scanner(connectionStream).useDelimiter("\\A")) {
-            result += s.next();
-            result += "\n";
+            System.out.println(s.next());
         } catch (IOException e) {
-            throw new IllegalArgumentException("Cannot fetch jokes");
+            System.out.println("Cannot fetch jokes.");
         }
-        return result;
     }
 }

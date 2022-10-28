@@ -10,19 +10,8 @@ public class App {
     //           You can run this app on the command line with `gradlew.bat run` on Windows or `./gradlew run` on macOS and Linux.
 
     public static void main(String[] args) {
-        System.out.print("Hi! Hit Enter to check the weather forecast");
-        var scanner = new Scanner(System.in);
-        while (true) {
-            scanner.nextLine();
-            // In a real app, this would check the weather forecast using some API, but let's simulate a prediction instead
-            int weather = ThreadLocalRandom.current().nextInt(0, 4);
-            if (weather == 0) {
-                System.out.println("Weather forecast: Sunny");
-            } else if (weather == 1) {
-                System.out.println("Weather forecast: Rainy");
-            } else {
-                System.out.println("Weather forecast: ???");
-            }
-        }
+
+        new Presenter(new RandomModel(), new ConsoleView()).run();
+
     }
 }

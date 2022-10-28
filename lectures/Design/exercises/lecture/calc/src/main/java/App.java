@@ -12,12 +12,30 @@ public class App {
     public static void main(String[] args) {
     outer:
         while (true) {
+            String input = get_input();
+            if(input == null)
+                break;
+
+            ArrayDeque stack = compute(input);
+            if(stack == null){
+                System.out.println("Invalid computation");
+                continue outer;
+            }
+
+            print(stack);
+        }
+
+        private String get_input(){
             var scanner = new Scanner(System.in);
             System.out.print("Computation to perform? (in reverse Polish notation; or 'exit') ");
             var text = scanner.nextLine().trim();
             if (text.equals("exit")) {
-                break;
+                return null;
             }
+            return text;
+        }
+
+        private ArrayDeque compute(String text) {
             var parts = text.split(" ");
             var stack = new ArrayDeque<Integer>();
             for (String p : parts) {
@@ -40,16 +58,19 @@ public class App {
                     try {
                         stack.push(Integer.parseInt(p));
                     } catch (NumberFormatException e) {
-                        System.out.println("Invalid computation");
-                        continue outer;
+                        return null;
                     }
                 }
             }
+        }
+
+        void print(ArrayDeque string) {
             if (stack.size() == 1) {
                 System.out.println(stack.pop());
             } else {
                 System.out.println("Invalid computation");
             }
         }
+
     }
 }

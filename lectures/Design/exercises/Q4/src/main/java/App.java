@@ -11,14 +11,33 @@ public class App {
     }
 
     public static List<Double> compute() throws FileNotFoundException {
-        File file = new File("data");
-        List<Double> normalized = new ArrayList<>();
+
+        List<Double> numbers = readFile("data");
+
+        List<Double> normalized = normalize(numbers); // SOLUTION: consider the computation of std and mean as two seperate tasks
+
+        writeFile(normalized, "output");
+
+        return normalized;
+    }
+
+    private static List<Double> readFile(String path) throws FileNotFoundException{
+        File file = new File(path);
+
         Scanner scanner = new Scanner(file);
         List<Double> numbers = new ArrayList<>();
+
         while (scanner.hasNextDouble()) {
             double number = scanner.nextDouble();
             numbers.add(number);
         }
+        scanner.close();
+
+        return numbers;
+    }
+
+    private static List<Double> normalize(List<Double> numbers) {
+        List<Double> normalized = new ArrayList<>();
         double sum = 0;
         for (double f : numbers) {
             sum += f;
@@ -35,8 +54,12 @@ public class App {
         }
         System.out.println(normalized);
 
+        return normalized;
+    }
+
+    private static void writeFile(List<Double> normalized, String file){
         try {
-            FileWriter fw = new FileWriter("output");
+            FileWriter fw = new FileWriter(file);
             for (double n : normalized) {
                 fw.write(Double.toString(n));
                 fw.write("\n");
@@ -46,7 +69,5 @@ public class App {
             System.out.println("Error writing output file");
         }
         System.out.println("Wrote output file.");
-        scanner.close();
-        return normalized;
     }
 }

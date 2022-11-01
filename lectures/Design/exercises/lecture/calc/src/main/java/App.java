@@ -27,6 +27,7 @@ public class App {
 
         private String get_input(){
             var scanner = new Scanner(System.in);
+            // "Reverse Polish notation", also known as "postfix", means the operator last, e.g., "1 1 + 2 *" for "(1 + 1) * 2"
             System.out.print("Computation to perform? (in reverse Polish notation; or 'exit') ");
             var text = scanner.nextLine().trim();
             if (text.equals("exit")) {

@@ -9,6 +9,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.io.*;
 
 /**
  * A repository of multiple APK packages.
@@ -32,16 +33,30 @@ public class PackageRepository {
      * Downloads and parses the package list from the repository
      */
     private List<Package> downloadPackageList() throws IOException {
-        URL url = new URL(baseUrl + "/APKINDEX.tar.gz");
+
+        long twoHours = 100 * 60 * 60 * 2;
+
         File f = new File("." + repository + "-tmp.tar.gz");
+        List<Package> packages;
 
-        System.out.print("Synchronization with repository " + repository + "...");
-        Networking.downloadFile(url, f, Terminal.progressBar("Synchronizing packages in repository " + repository));
-        System.out.println();
+        if(f.exists() && (System.currentTimeMillis() - f.lastModified() < twoHours)) {
 
-        // Read the list and delete the file
-        List<Package> packages = parsePackageList(f);
-        f.delete();
+            packages = parsePackageList(f);
+
+        } else {
+            if(f.exists())
+                f.delete();
+
+            URL url = new URL(baseUrl + "/APKINDEX.tar.gz");
+
+            System.out.print("Synchronization with repository " + repository + "...");
+            Networking.downloadFile(url, f, Terminal.progressBar("Synchronizing packages in repository " + repository));
+            System.out.println();
+
+            // Read the list and delete the file
+            packages = parsePackageList(f);
+
+        }
 
         return packages;
     }

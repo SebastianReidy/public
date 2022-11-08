@@ -14,9 +14,13 @@ import java.util.stream.Stream;
 public class CSVReader {
 
     private final Path path;
+    private final Cache cache;
 
-    public CSVReader(String fileName) {
+    public CSVReader(String fileName, Cache cache) {
+
         this.path = Paths.get(fileName);
+        this.cache = cache;
+
     }
 
     /**
@@ -26,12 +30,21 @@ public class CSVReader {
      */
     public List<Student> read(int n) {
         List<Student> result = new ArrayList<>();
+
+        for (int i = 1; i <= n; ++i) {
+            if (cache.contains(i)) {
+                result.add((Student)cache.get(i));
+            }
+        }
+        if (result.size() == n) return result;
+
         try (Stream<String> stream = Files.lines(path)) {
             stream.skip(1).limit(n).forEach(line -> {
                 if (!line.isEmpty()) {
                     String[] values = line.split("\t");
                     Student s = new Student(values[1], values[2], values[3], values[4]);
                     result.add(s);
+                    cache.put(Integer.valueOf(values[0]), s);
                 }
             });
         } catch (IOException e) {

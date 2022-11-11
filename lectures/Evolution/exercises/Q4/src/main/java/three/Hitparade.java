@@ -8,60 +8,25 @@ import java.util.List;
 public class Hitparade {
 
     // sorry if your favorite song didn't make the cut, you can add it if you want!
-    private final static List<Song> songs = Arrays.asList(
-        new Song("Never Gonna Give You Up", "Rick Astley", 8),
-        new Song("Friday", "Rebecca Black", 1),
-        new Song("CHIHUAHUA", "DJ BoBo", 5),
-        new Song("Bohemian Rhapsody", "Queen", 5),
-        new Song("Take On Me", "A-ha", 7),
-        new Song("Africa", "Toto", 10),
-        new Song("Gucci Gang", "Lil Pump", 5),
-        new Song("Gangnam Style", "PSY", 5)
+    private final static List<Item> songs = Arrays.asList(
+        new Item("Never Gonna Give You Up", "Rick Astley", 8),
+        new Item("Friday", "Rebecca Black", 1),
+        new Item("CHIHUAHUA", "DJ BoBo", 5),
+        new Item("Bohemian Rhapsody", "Queen", 5),
+        new Item("Take On Me", "A-ha", 7),
+        new Item("Africa", "Toto", 10),
+        new Item("Gucci Gang", "Lil Pump", 5),
+        new Item("Gangnam Style", "PSY", 5)
     );
 
     private static final int N = 3;
 
-    // returns the top N most popular songs
-    private static List<Song> getMostPopularSongs() {
-        List<Song> allSongs = new ArrayList<>(songs);
-        Collections.sort(allSongs);
-        return allSongs.subList(0, N);
-    }
+    Rating rating = new Rating(songs, N, "SONGS");
 
     // prints the top N most popular songs in a nice way
-    public static void prettyPrintMostPopularSongs() {
-        List<Song> topSongs = getMostPopularSongs();
-        System.out.println("====TOP SONGS====");
-        int i = 1;
-        for (Song s : topSongs)
-            System.out.println(i++ + ") " + s);
-    }
+    public void prettyPrintMostPopularSongs() {
 
-    // other methods like:
-    // getMostTrendingArtists()
-    // getTopSellingRockAlbum()
-    // ...
+        rating.prettyPrintMostPopularItems();
 
-
-    static private class Song implements Comparable<Song> {
-        String name;
-        String artist;
-        int popularity;
-
-        Song(String name, String artist, int popularity) {
-            this.name = name;
-            this.artist = artist;
-            this.popularity = popularity;
-        }
-
-        @Override
-        public int compareTo(Song o) {
-            return Integer.compare(o.popularity, this.popularity);
-        }
-
-        @Override
-        public String toString() {
-            return artist + " - " + name;
-        }
     }
 }

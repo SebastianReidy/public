@@ -2,60 +2,34 @@ package three;
 
 import java.util.*;
 
-public class Satellite {
+public class Satellite{
     // ratings are subjective, sorry if your favorite beer didn't make the cut, you can add it if you want!
-    private final static List<Beer> beers = Arrays.asList(
-        new Beer("Cuvée des Trolls", 8),
-        new Beer("Lupulus", 9),
-        new Beer("Kwak", 10),
-        new Beer("Punk IPA", 7),
-        new Beer("Gurten", 5),
-        new Beer("Wittekop", 4),
-        new Beer("Brooklyn Lager", 6),
-        new Beer("CoCo POW!", 0)
+    private final static List<Item> beers = Arrays.asList(
+        new Item("Cuvée des Trolls", 8),
+        new Item("Lupulus", 9),
+        new Item("Kwak", 10),
+        new Item("Punk IPA", 7),
+        new Item("Gurten", 5),
+        new Item("Wittekop", 4),
+        new Item("Brooklyn Lager", 6),
+        new Item("CoCo POW!", 0)
     );
 
     private static final int N = 5;
 
-    // returns the top N most popular beers
-    private static List<Beer> getMostPopularBeers() {
-        List<Beer> allBeers = new ArrayList<>(beers);
-        Collections.sort(allBeers);
-        return allBeers.subList(0, N);
-    }
+    Rating rating = new Rating(beers, N, "BEERS");
 
     // prints the top N most popular beers in a nice way
-    public static void prettyPrintMostPopularBeers() {
-        List<Beer> topBeers = getMostPopularBeers();
-        System.out.println("====TOP BEERS====");
-        int i = 1;
-        for (Beer b : topBeers)
-            System.out.println(i++ + ") " + b);
+    public void prettyPrintMostPopularBeers() {
+
+        rating.prettyPrintMostPopularItems();
+
     }
 
-    // Other methods like:
-    // getOpeningHours()
-    // getPizzaOfTheDayTopping()
-    // getMostPopularNonAlcoholicBeverages()
-    // ...
+    // Type: duplicate code in two different classes
 
-    static private class Beer implements Comparable<Beer> {
-        String name;
-        int popularity;
+    // Added two general classes Rating and Item to move the shared code between Satellite and Hitparade to those classes.
 
-        Beer(String name, int popularity) {
-            this.name = name;
-            this.popularity = popularity;
-        }
+    // SOLUTION: only extract one class for the topNcomparison
 
-        @Override
-        public int compareTo(Beer o) {
-            return Integer.compare(o.popularity, this.popularity);
-        }
-
-        @Override
-        public String toString() {
-            return name;
-        }
-    }
 }

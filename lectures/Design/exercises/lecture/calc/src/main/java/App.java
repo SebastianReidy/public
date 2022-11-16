@@ -12,31 +12,13 @@ public class App {
     public static void main(String[] args) {
     outer:
         while (true) {
-            String input = get_input();
-            if(input == null)
-                break;
-
-            ArrayDeque stack = compute(input);
-            if(stack == null){
-                System.out.println("Invalid computation");
-                continue outer;
-            }
-
-            print(stack);
-        }
-
-        private String get_input(){
             var scanner = new Scanner(System.in);
             // "Reverse Polish notation", also known as "postfix", means the operator last, e.g., "1 1 + 2 *" for "(1 + 1) * 2"
             System.out.print("Computation to perform? (in reverse Polish notation; or 'exit') ");
             var text = scanner.nextLine().trim();
             if (text.equals("exit")) {
-                return null;
+                break;
             }
-            return text;
-        }
-
-        private ArrayDeque compute(String text) {
             var parts = text.split(" ");
             var stack = new ArrayDeque<Integer>();
             for (String p : parts) {
@@ -59,19 +41,16 @@ public class App {
                     try {
                         stack.push(Integer.parseInt(p));
                     } catch (NumberFormatException e) {
-                        return null;
+                        System.out.println("Invalid computation");
+                        continue outer;
                     }
                 }
             }
-        }
-
-        void print(ArrayDeque string) {
             if (stack.size() == 1) {
                 System.out.println(stack.pop());
             } else {
                 System.out.println("Invalid computation");
             }
         }
-
     }
 }

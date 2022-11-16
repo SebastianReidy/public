@@ -1,7 +1,10 @@
+import java.lang.reflect.Array;
+
 class BankAccount {
 
   public enum CurrencyType {DOLLAR, EURO, POUND}
 
+  public double[] changeRate = {1, 1.15, 1.31};
   public BankAccount(CurrencyType currencyType, double amount) {
     this.currencyType = currencyType;
     this.amount = amount;
@@ -11,47 +14,40 @@ class BankAccount {
   private double amount;
 
   public boolean add(CurrencyType addedType, double addedAmount) {
-    double inCurrency = 0;
-    if (currencyType == addedType) {
-      inCurrency = addedAmount;
-    } else if (currencyType == CurrencyType.DOLLAR && addedType == CurrencyType.EURO) {
-      inCurrency = 1.15 * addedAmount;
-    } else if (currencyType == CurrencyType.DOLLAR && addedType == CurrencyType.POUND) {
-      inCurrency = 1.31 * addedAmount;
-    } else if (currencyType == CurrencyType.EURO && addedType == CurrencyType.DOLLAR) {
-      inCurrency = 0.87 * addedAmount;
-    } else if (currencyType == CurrencyType.EURO && addedType == CurrencyType.POUND) {
-      inCurrency = 1.14 * addedAmount;
-    } else if (currencyType == CurrencyType.POUND && addedType == CurrencyType.DOLLAR) {
-      inCurrency = 0.76 * addedAmount;
-    } else if (currencyType == CurrencyType.POUND && addedType == CurrencyType.EURO) {
-      inCurrency = 0.88 * addedAmount;
-    }
-    amount += inCurrency;
+
+    if(addedType == null)
+      throw new IllegalArgumentException("type must not be null");
+    if(addedAmount<0)
+      throw new IllegalArgumentException("added amount must not be negative");
+
+    amount += convertTo(addedType, addedAmount);
+
     return true;
   }
 
-  public boolean remove(CurrencyType removedType, double removedAmount) {
+  private double convertTo(CurrencyType addedType, double addedAmount){
+
+    if(addedType == null || addedAmount < 0)
+      throw new IllegalArgumentException("convertTo requires currency and no zero amount");
+
     double inCurrency = 0;
-    if (currencyType == removedType) {
-      inCurrency = removedAmount;
-    } else if (currencyType == CurrencyType.DOLLAR && removedType == CurrencyType.EURO) {
-      inCurrency = 1.15 * removedAmount;
-    } else if (currencyType == CurrencyType.DOLLAR && removedType == CurrencyType.POUND) {
-      inCurrency = 1.31 * removedAmount;
-    } else if (currencyType == CurrencyType.EURO && removedType == CurrencyType.DOLLAR) {
-      inCurrency = 0.87 * removedAmount;
-    } else if (currencyType == CurrencyType.EURO && removedType == CurrencyType.POUND) {
-      inCurrency = 1.14 * removedAmount;
-    } else if (currencyType == CurrencyType.POUND && removedType == CurrencyType.DOLLAR) {
-      inCurrency = 0.76 * removedAmount;
-    } else if (currencyType == CurrencyType.POUND && removedType == CurrencyType.EURO) {
-      inCurrency = 0.88 * removedAmount;
+    double rate = changeRate[addedType.ordinal()];
+    if(this.currencyType != CurrencyType.DOLLAR) {
+      rate = 1 / rate;
     }
-    if (inCurrency > amount) {
-      return false;
-    }
-    amount -= inCurrency;
+    inCurrency = addedAmount * rate;
+
+    return inCurrency;
+  }
+
+  public boolean remove(CurrencyType removedType, double removedAmount) {
+
+    if (removedType == null)
+      throw new IllegalArgumentException("removedType must not be null");
+    if (removedAmount < 0)
+      throw new IllegalArgumentException("removed amount must not be negative");
+
+    amount -= convertTo(removedType, removedAmount);
     return true;
   }
 
@@ -73,3 +69,8 @@ public class App {
     System.out.println("Balance: " + account.getAmount());
   }
 }
+
+/**
+ * SOLUTION: extract the currency conversion into a class of its own since the rates change over time & they are logically
+ * decoupled from the bankaccount.
+ */

@@ -27,7 +27,7 @@ public class Benchmarking {
         }
     }
 
-    @org.openjdk.jmh.annotations.Benchmark
+    @Benchmark
     // These 3 annotations keep the benchmark short, but aren't required.
     @Fork(value = 1, warmups = 0)
     @Warmup(iterations = 1)
@@ -41,5 +41,4 @@ public class Benchmarking {
         // away.
         bh.consume(result);
     }
-
 }

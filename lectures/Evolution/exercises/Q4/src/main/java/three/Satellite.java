@@ -4,32 +4,49 @@ import java.util.*;
 
 public class Satellite{
     // ratings are subjective, sorry if your favorite beer didn't make the cut, you can add it if you want!
-    private final static List<Item> beers = Arrays.asList(
-        new Item("Cuvée des Trolls", 8),
-        new Item("Lupulus", 9),
-        new Item("Kwak", 10),
-        new Item("Punk IPA", 7),
-        new Item("Gurten", 5),
-        new Item("Wittekop", 4),
-        new Item("Brooklyn Lager", 6),
-        new Item("CoCo POW!", 0)
+    private final static List<Beer> beers = Arrays.asList(
+        new Beer("Cuvée des Trolls", 8),
+        new Beer("Lupulus", 9),
+        new Beer("Kwak", 10),
+        new Beer("Punk IPA", 7),
+        new Beer("Gurten", 5),
+        new Beer("Wittekop", 4),
+        new Beer("Brooklyn Lager", 6),
+        new Beer("CoCo POW!", 0)
     );
 
     private static final int N = 5;
 
-    Rating rating = new Rating(beers, N, "BEERS");
+    private static final Comparison<Beer> comparison = new Comparison<Beer>();
 
     // prints the top N most popular beers in a nice way
-    public void prettyPrintMostPopularBeers() {
-
-        rating.prettyPrintMostPopularItems();
-
+    public static void prettyPrintMostPopularBeers() {
+        comparison.prettyPrintMostPopular("TOP BEERS", beers,N);
     }
 
-    // Type: duplicate code in two different classes
+    // Other methods like:
+    // getOpeningHours()
+    // getPizzaOfTheDayTopping()
+    // getMostPopularNonAlcoholicBeverages()
+    // ...
 
-    // Added two general classes Rating and Item to move the shared code between Satellite and Hitparade to those classes.
+    public static class Beer implements Comparable<Beer> {
+        String name;
+        int popularity;
 
-    // SOLUTION: only extract one class for the topNcomparison
+        Beer(String name, int popularity) {
+            this.name = name;
+            this.popularity = popularity;
+        }
 
+        @Override
+        public int compareTo(Beer o) {
+            return Integer.compare(o.popularity, this.popularity);
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
+    }
 }

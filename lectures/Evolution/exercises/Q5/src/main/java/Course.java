@@ -3,13 +3,13 @@ public class Course {
         MATH, ART, ENGLISH, HISTORY, GEOGRAPHY
     }
 
-    private TYPE type;
+    static private TYPE type;
 
     public Course(TYPE type) {
         this.type = type;
     }
 
-    public TYPE getType() {
+    public static TYPE getType() {
         return type;
     }
 }

@@ -1,10 +1,7 @@
 package one;
 
-public class Squat extends Exercise {
+public class Squat extends UnweightedExercise {
     public Squat() {
-
-        name = "squat";
-        weight = 0;
-
+        super("squat");
     }
 }

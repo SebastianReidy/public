@@ -1,7 +1,7 @@
 import java.util.Map;
 
 public class Room {
-    private String name;  // RoomName class is just a string => unnecessary
+    private String name;
     private Location location;
     private Map<TimeSlot, Course> occupancies;
 
@@ -13,7 +13,8 @@ public class Room {
     }
 
     public boolean isAvailable() {
-        return isAvailableAt(TimeSlot.now());
+        TimeSlot now = TimeSlot.now(); // returns the TimeSlot that we're currently in
+        return isAvailableAt(now);
     }
 
     public boolean isAvailableAt(TimeSlot slot) {
@@ -32,29 +33,25 @@ public class Room {
 
     // distance in meters from other to this room's location
     public double distanceFrom(double otherLatitude, double otherLongitude, int otherFloor) {
-        return location.distanceFrom(new Location(otherLatitude, otherLongitude, otherFloor));
+        return location.distance(new Location(otherLatitude, otherLongitude, otherFloor));
     }
 
     public Course.TYPE mostCommonCourseType() {
-        int[] courseCounts = new int[Course.TYPE.values().length];
-        for (Course c : occupancies.values()) {
-            courseCounts[c.getType().ordinal()]++;
-        }
-        return Course.TYPE.values()[getMaxIndex(courseCounts)];
-        // SOLUTION: use stream to find the max index, the list to find the index of this max value
-    }
+        int[] courseCount = new int[Course.TYPE.values().length];
 
-    private int getMaxIndex(int[] array){
-        int maxIndex = 0;
-        int maxValue = 0;
-        int index = 0;
-        for(int value : array){
-            if (value > maxValue){
-                maxIndex = index;
-                maxValue = value;
-            }
-            index++;
+        for(Course c : occupancies.values()){
+            courseCount[Course.getType().ordinal()]++;
         }
-        return maxIndex;
+
+        Course.TYPE currentBest = Course.TYPE.ART;
+        int bestCount = 0;
+        for(int i=0;i<Course.TYPE.values().length;i++){
+            if (courseCount[i] > bestCount){
+                bestCount = courseCount[i];
+                currentBest = Course.TYPE.values()[i];
+            }
+        }
+
+        return currentBest;
     }
 }

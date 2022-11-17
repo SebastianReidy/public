@@ -1,39 +1,55 @@
 public class Location {
-
-    private double latitude;
-    private double longitude;
+    private double locationLatitude;
+    private double locationLongitude;
     private int floor;
 
-    private final int EARTH_RADIUS = 6371;
-    private static final double FLOOR_HEIGHT = 10;
+    final int EARTH_RADIUS = 6371; // Radius of the earth
+
 
     Location(double latitude, double longitude, int floor){
-        this.latitude = latitude;
-        this.longitude = longitude;
+        this.locationLatitude = latitude;
+        this.locationLongitude = longitude;
         this.floor = floor;
     }
 
-    public double distanceFrom(Location location) {
+    public double getLocationLatitude() {
+        return locationLatitude;
+    }
 
-        double latDistance = Math.toRadians(this.latitude - location.latitude);
-        double lonDistance = Math.toRadians(this.longitude - location.longitude);
+    public void setLocationLatitude(double locationLatitude) {
+        this.locationLatitude = locationLatitude;
+    }
 
-        double haversineTheta = haversine(latDistance)
-                + Math.cos(Math.toRadians(location.latitude)) * Math.cos(Math.toRadians(this.latitude))
-                * haversine(lonDistance);
-        double theta = 2 * Math.atan2(Math.sqrt(haversineTheta), Math.sqrt(1 - haversineTheta));
-        double distanceOnEarthBall = EARTH_RADIUS * theta * 1000; // convert to meters
+    public double getLocationLongitude() {
+        return locationLongitude;
+    }
+
+    public void setLocationLongitude(double locationLongitude) {
+        this.locationLongitude = locationLongitude;
+    }
+
+    public int getFloor() {
+        return floor;
+    }
+
+    public void setFloor(int floor) {
+        this.floor = floor;
+    }
+
+    public double distance(Location other) {
+        double latDistance = Math.toRadians(locationLatitude - other.getLocationLatitude());
+        double lonDistance = Math.toRadians(locationLongitude - other.getLocationLongitude());
+        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
+                + Math.cos(Math.toRadians(other.getLocationLatitude())) * Math.cos(Math.toRadians(other.getLocationLatitude()))
+                * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        double distance = EARTH_RADIUS * c * 1000; // convert to meters
 
         // approximate elevations between 2 floors to be 10m
-        double elevationDiff = (location.floor - floor) * FLOOR_HEIGHT;
+        double elevationDiff = other.getFloor() * 10 - floor * 10;
 
-        double squaredDistance = Math.pow(distanceOnEarthBall, 2) + Math.pow(elevationDiff, 2);
+        distance = Math.pow(distance, 2) + Math.pow(elevationDiff, 2);
 
-        return Math.sqrt(squaredDistance);
+        return Math.sqrt(distance); // could rename the variables and use a function / pow for the sin calculations
     }
-
-    private double haversine(double angle){
-        return Math.pow(Math.sin(angle / 2), 2);
-    }
-
 }

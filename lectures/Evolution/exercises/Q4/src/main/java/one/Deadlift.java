@@ -1,15 +1,7 @@
 package one;
 
-public class Deadlift extends Exercise {
-
-    public Deadlift(int inWeight) {
-
-        if (inWeight <= 0) {
-            throw new IllegalArgumentException("Deadlift requires weight");
-        }
-
-        name = "deadlift";
-        this.weight = inWeight;
-
+public class Deadlift extends WeightedExercise {
+    public Deadlift(int weight) {
+        super("deadlift", weight);
     }
 }

@@ -2,58 +2,45 @@ package two;
 
 import java.util.Scanner;
 
+/**
+ * instance of duplication in the same class
+ */
 public class Greeter {
 
     // prints: Nice to meet you Willy
     public static void askForFirstName() {
-
-        askHelper(new String[] {"first name"} );
-
+        String firstName = getInput("first name");
+        greet(firstName);
     }
 
     // prints: Nice to meet you Wonka
     public static void askForLastName() {
-
-        askHelper(new String[] {"last name"});
-
+        String lastName = getInput("last name");
+        greet(lastName);
     }
 
     // prints: Nice to meet you Willy Wonka
     public static void askForFullName() {
-
-        askHelper(new String[] {"first name", "last name"});
-
+        String firstName = getInput("first name");
+        String lastName = getInput("last name");
+        greet(firstName + " " + lastName);
     }
 
     // prints: Nice to meet you Willy Wonka (23 years old)
     public static void askForFullNameAndAge() {
-
-        askHelper(new String[] {"first name", "last name", "age"});
-
+        String firstName = getInput("first name");
+        String lastName = getInput("last name");
+        String age = getInput("age");
+        greet(firstName + " " + lastName + " (" + age + " years old)");
     }
 
-    // Type: duplicate code inside the same class
-
-    // new helper method to avoid copying the read and writes from / to command line
-    private static void askHelper(String[] ask) {
-
-        Scanner s  = new Scanner(System.in);
-        String result = "Nice to meet you";
-
-        for (var property : ask) {
-
-            System.out.println("Please enter your " + property + ":");
-
-            if (property != "age") {
-                result = result + " " + s.next();
-            }
-            else {
-                result += result + " (" + s.next() + " years old)";
-            }
-        }
+    private static String getInput(String name){
+        Scanner s = new Scanner(System.in);
+        System.out.println("Please enter your " + name + ":");
+        return s.next();
     }
 
-    // SOLUTION: extract two methods; one for asking and one for printing the result. Use constants for the displayed
-    // text
-
+    private static void greet(String identity){
+        System.out.println("Nice to meet you " + identity);
+    }
 }

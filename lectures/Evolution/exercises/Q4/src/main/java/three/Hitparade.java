@@ -5,28 +5,57 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class Hitparade {
+/**
+ * instance of duplication in different classes
+ */
+public class Hitparade{
 
     // sorry if your favorite song didn't make the cut, you can add it if you want!
-    private final static List<Item> songs = Arrays.asList(
-        new Item("Never Gonna Give You Up", "Rick Astley", 8),
-        new Item("Friday", "Rebecca Black", 1),
-        new Item("CHIHUAHUA", "DJ BoBo", 5),
-        new Item("Bohemian Rhapsody", "Queen", 5),
-        new Item("Take On Me", "A-ha", 7),
-        new Item("Africa", "Toto", 10),
-        new Item("Gucci Gang", "Lil Pump", 5),
-        new Item("Gangnam Style", "PSY", 5)
+    private final static List<Song> songs = Arrays.asList(
+        new Song("Never Gonna Give You Up", "Rick Astley", 8),
+        new Song("Friday", "Rebecca Black", 1),
+        new Song("CHIHUAHUA", "DJ BoBo", 5),
+        new Song("Bohemian Rhapsody", "Queen", 5),
+        new Song("Take On Me", "A-ha", 7),
+        new Song("Africa", "Toto", 10),
+        new Song("Gucci Gang", "Lil Pump", 5),
+        new Song("Gangnam Style", "PSY", 5)
     );
 
     private static final int N = 3;
 
-    Rating rating = new Rating(songs, N, "SONGS");
+    private static final Comparison<Song> comparison = new Comparison<Song>();
 
-    // prints the top N most popular songs in a nice way
-    public void prettyPrintMostPopularSongs() {
+    // prints the top N most popular beers in a nice way
+    public static void prettyPrintMostPopularBeers() {
+        comparison.prettyPrintMostPopular("TOP SONGS", songs,N);
+    }
 
-        rating.prettyPrintMostPopularItems();
+    // other methods like:
+    // getMostTrendingArtists()
+    // getTopSellingRockAlbum()
+    // ...
 
+
+    public static class Song implements Comparable<Song> {
+        String name;
+        String artist;
+        int popularity;
+
+        Song(String name, String artist, int popularity) {
+            this.name = name;
+            this.artist = artist;
+            this.popularity = popularity;
+        }
+
+        @Override
+        public int compareTo(Song o) {
+            return Integer.compare(o.popularity, this.popularity);
+        }
+
+        @Override
+        public String toString() {
+            return artist + " - " + name;
+        }
     }
 }

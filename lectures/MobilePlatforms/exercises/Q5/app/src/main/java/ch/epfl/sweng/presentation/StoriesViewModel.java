@@ -13,6 +13,10 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+import androidx.room.Room;
 
 import java.util.Comparator;
 import java.util.List;
@@ -22,16 +26,22 @@ import ch.epfl.sweng.domain.api.HackerNewsApi;
 import ch.epfl.sweng.domain.api.HackerNewsItem;
 import ch.epfl.sweng.domain.api.retrofit.RetrofitHackerNewsApiFactory;
 import ch.epfl.sweng.domain.Story;
+import ch.epfl.sweng.domain.db.DbDao;
+import ch.epfl.sweng.domain.db.DbObj;
+import ch.epfl.sweng.domain.db.DbStory;
 
 /** A {@link ViewModel} which displays the list of available stories. */
 public final class StoriesViewModel extends AndroidViewModel {
 
   private final HackerNewsApi api;
 
+  private final DbDao db;
+
   /** Creates a new {@link StoriesViewModel} instance. */
   public StoriesViewModel(Application application) {
     super(application);
     this.api = new RetrofitHackerNewsApiFactory().create();
+    this.db = Room.databaseBuilder(application, DbObj.class, "story_database").build().storyDao();
   }
 
   /** Returns the top story ids from HackerNews. */
@@ -60,20 +70,37 @@ public final class StoriesViewModel extends AndroidViewModel {
                 .collect(toList()));
   }
 
+  private static DbStory toEntity(Story story) {
+    var entity = new DbStory();
+    entity.id = story.getId();
+    entity.title = story.getTitle();
+    entity.url = story.getUrl();
+    return entity;
+  }
+
   /** Reloads the stories and populates the database with the new values. */
   public void refresh(LifecycleOwner owner) {
     // TODO : Fetch all the stories from the API and store them in the database.
+    getTopStoriesLiveData()
+            .observe(
+                    owner,
+                    s -> {
+                      var updated = s.stream().map(StoriesViewModel::toEntity).toArray(DbStory[]::new);
+                      db.insertAll(updated);
+                    });
   }
 
   /** Moves all the stories from the database. */
   public void clearAll() {
     // TODO : Clear all the stories from the database.
+    db.clear();
   }
 
   /** Returns the top stories from HackerNews. */
   @NonNull
   public LiveData<List<Story>> getTopStories() {
     // TODO : Observe the values from the database.
-    return getTopStoriesLiveData();
+    return map(db.getAll(), stories -> stories.stream()
+            .map(story -> new Story.Builder().id(story.id).url(story.url).title(story.title).build()).collect(toList()));
   }
 }

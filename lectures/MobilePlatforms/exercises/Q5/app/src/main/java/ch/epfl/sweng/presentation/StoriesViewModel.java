@@ -13,10 +13,14 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+import androidx.room.Room;
 
 import java.util.Comparator;
 import java.util.List;
 
+import ch.epfl.sweng.domain.RoomStory;
+import ch.epfl.sweng.domain.StoriesDatabase;
+import ch.epfl.sweng.domain.StoryDAO;
 import ch.epfl.sweng.domain.api.ApiResponse;
 import ch.epfl.sweng.domain.api.HackerNewsApi;
 import ch.epfl.sweng.domain.api.HackerNewsItem;
@@ -28,15 +32,22 @@ public final class StoriesViewModel extends AndroidViewModel {
 
   private final HackerNewsApi api;
 
+  private final StoriesDatabase db;
+  private final StoryDAO dao;
+
   /** Creates a new {@link StoriesViewModel} instance. */
   public StoriesViewModel(Application application) {
     super(application);
     this.api = new RetrofitHackerNewsApiFactory().create();
+    this.db = Room.databaseBuilder(application,
+            StoriesDatabase.class, "database-stories").build();
+    this.dao = this.db.storyDAO();
   }
 
   /** Returns the top story ids from HackerNews. */
   private LiveData<List<Integer>> getTopItemIdsLiveData() {
-    var top = api.topStories();
+    var top = api.topStories();  // request the top stories form the api
+    // the api returns a list with the IDs of the best stories
     return map(top, r -> r.stream().flatMap(List::stream).collect(toList()));
   }
 
@@ -60,20 +71,36 @@ public final class StoriesViewModel extends AndroidViewModel {
                 .collect(toList()));
   }
 
+  private static RoomStory toEntity(Story story){
+    RoomStory roomStory = new RoomStory();
+    roomStory.id = story.getId();
+    roomStory.title = story.getTitle();
+    roomStory.url = story.getUrl();
+    return roomStory;
+  }
+
   /** Reloads the stories and populates the database with the new values. */
   public void refresh(LifecycleOwner owner) {
     // TODO : Fetch all the stories from the API and store them in the database.
+    // use the obeserve(owner, observer (implements an onChange() function; preferably trough lambda))
+    getTopStoriesLiveData().observe(owner, list -> {
+      var updated = list.stream().map(StoriesViewModel::toEntity).toArray(RoomStory[]::new);
+      dao.insertAll(updated);
+    });
   }
 
   /** Moves all the stories from the database. */
   public void clearAll() {
     // TODO : Clear all the stories from the database.
+    this.dao.nukeTable();
   }
 
   /** Returns the top stories from HackerNews. */
   @NonNull
   public LiveData<List<Story>> getTopStories() {
     // TODO : Observe the values from the database.
-    return getTopStoriesLiveData();
+    return map(this.dao.getAll(), list -> list.stream().map(entity ->
+            new Story.Builder().id(entity.id).title(entity.title).url(entity.url).build())
+            .collect(toList()));
   }
 }

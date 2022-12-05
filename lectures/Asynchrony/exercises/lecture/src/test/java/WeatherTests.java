@@ -13,16 +13,31 @@ final class WeatherTests {
     @Test
     void todaysWeatherIsSunny() {
         // TODO: Test that `Weather.today` returns `"Sunny"`, without changing `Weather.today`
+        String weather = Weather.today().orTimeout(5, TimeUnit.SECONDS).join();  // add a timeout such that tests don't wait forever
+        assertThat(weather, is(weather));
     }
 
     @Test
     void clickingButtonSetsWeatherToSunny() {
         // TODO: Test that `WeatherView.clickButton` sets `WeatherView.weather` to `"Sunny"`, without changing `WeatherView`
+        WeatherView weatherView = new WeatherView();
+        CompletableFuture<Void> future = new CompletableFuture<Void>();
+        weatherView.setCallback(() -> future.complete(null));
+        weatherView.clickButton();
+        future.orTimeout(5, TimeUnit.SECONDS).join();
+        assertThat(weatherView.weather(), is("Sunny"));
     }
 
     @Test
     void weathersContainsYesterdayAndToday() {
         // TODO: Test that `Weather.printWeathers` yields `"Today: Sunny"` and `"Yesterday: Cloudy"` in any order, **changing `Weather.printWeathers` as necessary**
         //       However, keep the logic of prefixing weathers inside `Weather`; make minimal changes
+        var weathers = new ArrayList<String>();
+
+        Weather.printWeathers(weathers::add)
+                .orTimeout(5, TimeUnit.SECONDS)
+                .join();
+
+        assertThat(weathers, containsInAnyOrder("Today: Sunny", "Yesterday: Cloudy"));
     }
 }

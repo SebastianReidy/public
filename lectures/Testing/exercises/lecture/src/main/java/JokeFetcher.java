@@ -14,12 +14,22 @@ import java.util.Scanner;
  * (If you have the time, you can try improving this class to explicitly detect "ID not found" errors,
  * and write tests for the error cases)
  */
+interface HttpClient{
+    public List<String> get(String url);
+
+}
 public final class JokeFetcher {
     /**
      * Prints the joke with the specified ID to the console.
      *
      * @param jokeId e.g., "R7UfaahVfFd"
      */
+    private final HttpClient client;
+
+    JokeFetcher(HttpClient client){
+        this.client = client;
+    }
+
     public void printJokeText(String jokeId) {
         URL url;
         try {

@@ -9,6 +9,10 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Date;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.Files;
+
 
 /**
  * A repository of multiple APK packages.
@@ -16,6 +20,8 @@ import java.util.List;
 public class PackageRepository {
     private final String baseUrl;
     private final String repository;
+
+    private static final long RELOAD = 10000000;
 
     /**
      * Construct this PackageRepository
@@ -32,18 +38,36 @@ public class PackageRepository {
      * Downloads and parses the package list from the repository
      */
     private List<Package> downloadPackageList() throws IOException {
-        URL url = new URL(baseUrl + "/APKINDEX.tar.gz");
         File f = new File("." + repository + "-tmp.tar.gz");
+        Date date = new Date();
+        List<Package> packages = new ArrayList<Package>();
 
+        if (f.exists()) {
+
+            if (f.lastModified() - date.getTime() < RELOAD) {
+
+                f.delete();
+
+                packages = downloadList(f);
+
+            }
+            else{
+                packages = parsePackageList(f);
+            }
+        } else {
+            packages = downloadList(f);
+        }
+        return packages;
+    }
+
+    private List<Package> downloadList(File f) throws IOException{
+        URL url = new URL(baseUrl + "/APKINDEX.tar.gz");
         System.out.print("Synchronization with repository " + repository + "...");
         Networking.downloadFile(url, f, Terminal.progressBar("Synchronizing packages in repository " + repository));
         System.out.println();
 
-        // Read the list and delete the file
-        List<Package> packages = parsePackageList(f);
-        f.delete();
-
-        return packages;
+        // Read the list
+        return parsePackageList(f);
     }
 
     /**

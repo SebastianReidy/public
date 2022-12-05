@@ -5,7 +5,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class Hitparade {
+/**
+ * instance of duplication in different classes
+ */
+public class Hitparade{
 
     // sorry if your favorite song didn't make the cut, you can add it if you want!
     private final static List<Song> songs = Arrays.asList(
@@ -21,20 +24,11 @@ public class Hitparade {
 
     private static final int N = 3;
 
-    // returns the top N most popular songs
-    private static List<Song> getMostPopularSongs() {
-        List<Song> allSongs = new ArrayList<>(songs);
-        Collections.sort(allSongs);
-        return allSongs.subList(0, N);
-    }
+    private static final Comparison<Song> comparison = new Comparison<Song>();
 
-    // prints the top N most popular songs in a nice way
-    public static void prettyPrintMostPopularSongs() {
-        List<Song> topSongs = getMostPopularSongs();
-        System.out.println("====TOP SONGS====");
-        int i = 1;
-        for (Song s : topSongs)
-            System.out.println(i++ + ") " + s);
+    // prints the top N most popular beers in a nice way
+    public static void prettyPrintMostPopularBeers() {
+        comparison.prettyPrintMostPopular("TOP SONGS", songs,N);
     }
 
     // other methods like:
@@ -43,7 +37,7 @@ public class Hitparade {
     // ...
 
 
-    static private class Song implements Comparable<Song> {
+    public static class Song implements Comparable<Song> {
         String name;
         String artist;
         int popularity;

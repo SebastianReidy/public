@@ -13,9 +13,6 @@ public class App {
     var classes = new String[]{"SwEng", "SDP", "DB", "OS", "Algo", "ML"};
     var rooms = new String[]{"BC 05", "BC 06", "BC 07", "BC 08", "BC 09", "BC 10"};
     var students = Database.students().limit(100).toArray(Student[]::new);
-
-    // At the beginning of the day, each student chooses a random classroom in which they will
-    // study.
     var locations = new HashMap<Student, String>();
     for (var student : students) {
       var location = rooms[random.nextInt(rooms.length)];

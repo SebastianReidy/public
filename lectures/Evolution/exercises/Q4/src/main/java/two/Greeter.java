@@ -2,43 +2,45 @@ package two;
 
 import java.util.Scanner;
 
+/**
+ * instance of duplication in the same class
+ */
 public class Greeter {
 
     // prints: Nice to meet you Willy
     public static void askForFirstName() {
-        Scanner s = new Scanner(System.in);
-        System.out.println("Please enter your first name:");
-        String firstName = s.next();
-        System.out.println("Nice to meet you " + firstName);
+        String firstName = getInput("first name");
+        greet(firstName);
     }
 
     // prints: Nice to meet you Wonka
     public static void askForLastName() {
-        Scanner s = new Scanner(System.in);
-        System.out.println("Please enter your last name:");
-        String lastName = s.next();
-        System.out.println("Nice to meet you " + lastName);
+        String lastName = getInput("last name");
+        greet(lastName);
     }
 
     // prints: Nice to meet you Willy Wonka
     public static void askForFullName() {
-        Scanner s = new Scanner(System.in);
-        System.out.println("Please enter your first name:");
-        String firstName = s.next();
-        System.out.println("Please enter your last name:");
-        String lastName = s.next();
-        System.out.println("Nice to meet you " + firstName + " " + lastName);
+        String firstName = getInput("first name");
+        String lastName = getInput("last name");
+        greet(firstName + " " + lastName);
     }
 
     // prints: Nice to meet you Willy Wonka (23 years old)
     public static void askForFullNameAndAge() {
+        String firstName = getInput("first name");
+        String lastName = getInput("last name");
+        String age = getInput("age");
+        greet(firstName + " " + lastName + " (" + age + " years old)");
+    }
+
+    private static String getInput(String name){
         Scanner s = new Scanner(System.in);
-        System.out.println("Please enter your first name:");
-        String firstName = s.next();
-        System.out.println("Please enter your last name:");
-        String lastName = s.next();
-        System.out.println("Please enter your age:");
-        String age = s.next();
-        System.out.println("Nice to meet you " + firstName + " " + lastName + " (" + age + " years old)");
+        System.out.println("Please enter your " + name + ":");
+        return s.next();
+    }
+
+    private static void greet(String identity){
+        System.out.println("Nice to meet you " + identity);
     }
 }

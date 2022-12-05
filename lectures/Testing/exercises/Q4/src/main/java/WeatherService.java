@@ -7,6 +7,10 @@ public class WeatherService {
         httpClient = new RealHttpClient();
     }
 
+    public WeatherService(HttpClient client){
+        this.httpClient = client;
+    }
+
     public Weather getWeatherToday() {
         String data;
         try {

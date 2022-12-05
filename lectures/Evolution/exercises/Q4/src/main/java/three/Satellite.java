@@ -2,7 +2,7 @@ package three;
 
 import java.util.*;
 
-public class Satellite {
+public class Satellite{
     // ratings are subjective, sorry if your favorite beer didn't make the cut, you can add it if you want!
     private final static List<Beer> beers = Arrays.asList(
         new Beer("Cuvée des Trolls", 8),
@@ -17,20 +17,11 @@ public class Satellite {
 
     private static final int N = 5;
 
-    // returns the top N most popular beers
-    private static List<Beer> getMostPopularBeers() {
-        List<Beer> allBeers = new ArrayList<>(beers);
-        Collections.sort(allBeers);
-        return allBeers.subList(0, N);
-    }
+    private static final Comparison<Beer> comparison = new Comparison<Beer>();
 
     // prints the top N most popular beers in a nice way
     public static void prettyPrintMostPopularBeers() {
-        List<Beer> topBeers = getMostPopularBeers();
-        System.out.println("====TOP BEERS====");
-        int i = 1;
-        for (Beer b : topBeers)
-            System.out.println(i++ + ") " + b);
+        comparison.prettyPrintMostPopular("TOP BEERS", beers,N);
     }
 
     // Other methods like:
@@ -39,7 +30,7 @@ public class Satellite {
     // getMostPopularNonAlcoholicBeverages()
     // ...
 
-    static private class Beer implements Comparable<Beer> {
+    public static class Beer implements Comparable<Beer> {
         String name;
         int popularity;
 

@@ -27,7 +27,7 @@ public final class DocumentService {
      */
     public DocumentService(DocumentProvider... providers) {
         // TODO : Handle multiple providers and retries properly ???
-        this.provider = providers[0];
+        this.provider = new RetryDecorator(new CombineDecorator(providers));
     }
 
     /**

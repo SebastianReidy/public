@@ -11,7 +11,7 @@ _Solal Pirelli wrote the lecture notes. Alexandre Piveteau and Karim Sabaa wrote
 _For EPFL-specific details please see [the course web page](https://dslab.epfl.ch/teaching/sweng/)._
 
 
-## Course objectives
+## Objectives
 
 After completing this course, students should be able to:
 - Recognize common needs and issues in software development
@@ -22,11 +22,15 @@ After completing this course, students should be able to:
 - Produce software that enables users to reliably and efficiently perform the tasks they require
 
 
+## Prerequisites
+
+This course assumes familiarity with the basics of programming, and specifically the Java programming language to practice the theoretical concepts taught in class.
+
+
 ## Lectures
 
 This course introduces key software engineering topics in one lecture each.
-Each lecture is designed to take 120 minutes and includes exercises to be done during the lecture,
-longer exercises to be done after the lecture, and a small quiz to refresh one's memory before going on to the next lecture.
+Each lecture is designed to take 120 minutes and includes exercises to be done during the lecture and longer exercises to be done after the lecture.
 
 The first three lectures should be done in order, as they are prerequisites for the rest:
 

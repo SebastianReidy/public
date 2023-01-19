@@ -5,6 +5,7 @@ import data.VideoDataEU;
 import data.VideoDataUS;
 import model.VideoFile;
 
+import javax.print.attribute.standard.Compression;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -40,6 +41,14 @@ public class SwengflixProvider implements VideoFileProvider {
     @Override
     public CompletableFuture<VideoFile> getVideo(int uniqueID) {
         // TODO: We should enable querying of any of our databases (not just the EU DB)
-        return dbs.get(0).getVideoFile(uniqueID);
+        CompletableFuture<VideoFile> result = new CompletableFuture<>();
+        CompletableFuture<VideoFile>[] futures = this.dbs.stream()
+                .map(provider -> provider.getVideoFile(uniqueID).thenApply(result::complete))
+                .toArray(CompletableFuture[]::new);
+        CompletableFuture.allOf(futures).exceptionally(e -> {
+            result.completeExceptionally(e);
+            return null;
+        });
+        return result;
     }
 }
